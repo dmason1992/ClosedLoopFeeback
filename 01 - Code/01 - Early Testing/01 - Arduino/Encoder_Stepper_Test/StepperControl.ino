@@ -11,7 +11,9 @@ int enablePin = 5;
 int dirPin = 7;
 int stepperPin = 6;
 float stepperPos = 0.0;
-
+int microStepping = 16;
+int stepsPerRev = 200*microStepping;
+int rpm = 500;
 
 void initialiseStepper(){
  pinMode(enablePin, OUTPUT);
@@ -29,14 +31,15 @@ void enableStepper(boolean state){
 }
 
 void step(boolean dir,float deg){
- int steps = abs(deg)*((200.0*16)/360.0);
+ long steps = abs(deg)*(stepsPerRev/360.0);
+ long stepDelay = 1000000/((rpm / 60)*stepsPerRev);
  digitalWrite(dirPin,dir);
- delay(50);
+ delay(5);
  for(int i=0;i<steps;i++){
    digitalWrite(stepperPin, HIGH);
-   delayMicroseconds(10);
+   delayMicroseconds(stepDelay);
    digitalWrite(stepperPin, LOW);
-   delayMicroseconds(200);
+   delayMicroseconds(stepDelay);
  }
 
 }
@@ -50,7 +53,9 @@ void abs_pos(float deg){
     step(true, current_pos-deg);
   }
   current_pos = E1_getDeg();
-  if (abs(current_pos - deg) > 0.1){
+  if (abs(current_pos - deg) > 0.2){
+    Serial.print("Error: ");
+    Serial.println(current_pos-deg);
     abs_pos(deg);
   }
   else {

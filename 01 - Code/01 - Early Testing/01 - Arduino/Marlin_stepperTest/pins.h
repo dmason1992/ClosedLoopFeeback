@@ -551,9 +551,9 @@
   #define LARGE_FLASH true
 
   #if MB(3DRAG)
-    #define X_STEP_PIN         54
-    #define X_DIR_PIN          55
-    #define X_ENABLE_PIN       38
+    #define X_STEP_PIN         6
+    #define X_DIR_PIN          7
+    #define X_ENABLE_PIN       5
     #define X_MIN_PIN           3
     #define X_MAX_PIN           -1   //2 //Max endstops default to disabled "-1", set to commented value to enable.
 
@@ -593,9 +593,9 @@
 
   #else
 
-    #define X_STEP_PIN         54
-    #define X_DIR_PIN          55
-    #define X_ENABLE_PIN       38
+    #define X_STEP_PIN         6
+    #define X_DIR_PIN          7
+    #define X_ENABLE_PIN       5
     #define X_MIN_PIN           3
     #define X_MAX_PIN           2
 
