@@ -127,6 +127,11 @@ public:
     int32_t correct(int32_t x, int32_t y, int32_t z) const;
     void updateDerived();
     void reportStatus();
+	bool isEnabled() {return enabled;}
+	int32_t zMaxSteps() {return zEnd;}	
+	void set(float x,float y,float z);
+	void showMatrix();		
+    void resetCorrection();
 private:
     int matrixIndex(fast8_t x, fast8_t y) const;
     int32_t getMatrix(int index) const;
@@ -135,10 +140,14 @@ private:
     INLINE int32_t extrapolatePoint(fast8_t x1, fast8_t y1, fast8_t x2, fast8_t y2) const;
     void extrapolateCorner(fast8_t x, fast8_t y, fast8_t dx, fast8_t dy);
     void extrapolateCorners();
-    void resetCorrection();
 // attributes
+#if DRIVE_SYSTEM == DELTA	
     int32_t step;
     int32_t radiusCorrectionSteps;
+#else
+	int32_t xCorrectionSteps,xOffsetSteps;
+	int32_t yCorrectionSteps,yOffsetSteps;
+#endif	
     int32_t zStart,zEnd;
 #if !DISTORTION_PERMANENT
     int32_t matrix[DISTORTION_CORRECTION_POINTS * DISTORTION_CORRECTION_POINTS];
@@ -322,11 +331,13 @@ public:
     static int16_t travelMovesPerSecond;
     static int16_t printMovesPerSecond;
     static float radius0;
+#else
+	static int32_t zCorrectionStepsIncluded; 	
 #endif
 #if FEATURE_Z_PROBE || MAX_HARDWARE_ENDSTOP_Z || NONLINEAR_SYSTEM
     static int32_t stepsRemainingAtZHit;
 #endif
-#if DRIVE_SYSTEM==DELTA
+#if DRIVE_SYSTEM == DELTA
     static int32_t stepsRemainingAtXHit;
     static int32_t stepsRemainingAtYHit;
 #endif
@@ -337,6 +348,10 @@ public:
 #endif
 #if FEATURE_AUTOLEVEL
     static float autolevelTransformation[9]; ///< Transformation matrix
+#endif
+#if FAN_THERMO_PIN > -1
+	static float thermoMinTemp;
+	static float thermoMaxTemp;
 #endif
     static int16_t zBabystepsMissing;
     static float minimumSpeed;               ///< lowest allowed speed to keep integration error small
@@ -465,6 +480,7 @@ public:
     }
     /** Sets the pwm for the fan speed. Gets called by motion control ot Commands::setFanSpeed. */
     static void setFanSpeedDirectly(uint8_t speed);
+    static void setFan2SpeedDirectly(uint8_t speed);
     /** \brief Disable stepper motor for x direction. */
     static INLINE void disableXStepper()
     {
@@ -799,8 +815,8 @@ public:
     static INLINE void unsetAllSteppersDisabled()
     {
         flag0 &= ~PRINTER_FLAG0_STEPPER_DISABLED;
-#if FAN_BOARD_PIN>-1
-        pwm_pos[NUM_EXTRUDER + 1] = 255;
+#if FAN_BOARD_PIN > -1
+        pwm_pos[PWM_BOARD_FAN] = 255;
 #endif // FAN_BOARD_PIN
     }
     static INLINE bool isAnyTempsensorDefect()
@@ -1044,13 +1060,17 @@ public:
     static void defaultLoopActions();
     static uint8_t setDestinationStepsFromGCode(GCode *com);
     static uint8_t moveTo(float x,float y,float z,float e,float f);
-    static uint8_t moveToReal(float x,float y,float z,float e,float f);
+    static uint8_t moveToReal(float x,float y,float z,float e,float f,bool pathOptimize = true);
     static void homeAxis(bool xaxis,bool yaxis,bool zaxis); /// Home axis
     static void setOrigin(float xOff,float yOff,float zOff);
     static bool isPositionAllowed(float x,float y,float z);
     static INLINE int getFanSpeed()
     {
-        return (int)pwm_pos[NUM_EXTRUDER + 2];
+        return (int)pwm_pos[PWM_FAN1];
+    }
+    static INLINE int getFan2Speed()
+    {
+	    return (int)pwm_pos[PWM_FAN2];
     }
 #if NONLINEAR_SYSTEM
     static INLINE void setDeltaPositions(long xaxis, long yaxis, long zaxis)
@@ -1065,6 +1085,8 @@ public:
     static float runZMaxProbe();
 #endif
 #if FEATURE_Z_PROBE
+	static void startProbing(bool runScript);
+	static void finishProbing();
     static float runZProbe(bool first,bool last,uint8_t repeat = Z_PROBE_REPETITIONS,bool runStartScript = true);
     static void waitForZProbeStart();
     static float bendingCorrectionAt(float x,float y);

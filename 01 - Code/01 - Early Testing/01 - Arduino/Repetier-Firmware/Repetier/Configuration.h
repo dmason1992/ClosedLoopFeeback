@@ -36,9 +36,9 @@
 
 */
 
-#define NUM_EXTRUDER 2
+#define NUM_EXTRUDER 1
 #define MOTHERBOARD 403
-#define RFSERIAL Serial
+#define RFSERIAL SerialUSB
 #include "pins.h"
 
 // ################## EDIT THESE SETTINGS MANUALLY ################
@@ -46,6 +46,13 @@
 
 #undef FAN_BOARD_PIN
 #define FAN_BOARD_PIN -1
+#define FAN_THERMO_PIN -1
+#define FAN_THERMO_MIN_PWM 128
+#define FAN_THERMO_MAX_PWM 255
+#define FAN_THERMO_MIN_TEMP 45
+#define FAN_THERMO_MAX_TEMP 60
+#define FAN_THERMO_THERMISTOR_PIN -1
+#define FAN_THERMO_THERMISTOR_TYPE 1
 
 //#define EXTERNALSERIAL  use Arduino serial library instead of build in. Requires more ram, has only 63 byte input buffer.
 // Uncomment the following line if you are using arduino compatible firmware made for Arduino version earlier then 1.0
@@ -55,8 +62,8 @@
 #define BLUETOOTH_BAUD  115200
 #define MIXING_EXTRUDER 0
 
-#define DRIVE_SYSTEM 1
-#define XAXIS_STEPS_PER_MM 80
+#define DRIVE_SYSTEM 0
+#define XAXIS_STEPS_PER_MM 170
 #define YAXIS_STEPS_PER_MM 80
 #define ZAXIS_STEPS_PER_MM 80
 #define EXTRUDER_FAN_COOL_TEMP 50
@@ -103,41 +110,6 @@
 #define EXT0_DECOUPLE_TEST_PERIOD 12000
 #define EXT0_JAM_PIN -1
 #define EXT0_JAM_PULLUP 0
-#define EXT1_X_OFFSET 0
-#define EXT1_Y_OFFSET 0
-#define EXT1_Z_OFFSET 0
-#define EXT1_STEPS_PER_MM 370
-#define EXT1_TEMPSENSOR_TYPE 1
-#define EXT1_TEMPSENSOR_PIN TEMP_2_PIN
-#define EXT1_HEATER_PIN HEATER_2_PIN
-#define EXT1_STEP_PIN ORIG_E1_STEP_PIN
-#define EXT1_DIR_PIN ORIG_E1_DIR_PIN
-#define EXT1_INVERSE 0
-#define EXT1_ENABLE_PIN ORIG_E1_ENABLE_PIN
-#define EXT1_ENABLE_ON 0
-#define EXT1_MAX_FEEDRATE 50
-#define EXT1_MAX_START_FEEDRATE 20
-#define EXT1_MAX_ACCELERATION 5000
-#define EXT1_HEAT_MANAGER 3
-#define EXT1_WATCHPERIOD 1
-#define EXT1_PID_INTEGRAL_DRIVE_MAX 230
-#define EXT1_PID_INTEGRAL_DRIVE_MIN 40
-#define EXT1_PID_PGAIN_OR_DEAD_TIME 7
-#define EXT1_PID_I 2
-#define EXT1_PID_D 40
-#define EXT1_PID_MAX 255
-#define EXT1_ADVANCE_K 0
-#define EXT1_ADVANCE_L 0
-#define EXT1_ADVANCE_BACKLASH_STEPS 0
-#define EXT1_WAIT_RETRACT_TEMP 150
-#define EXT1_WAIT_RETRACT_UNITS 0
-#define EXT1_SELECT_COMMANDS ""
-#define EXT1_DESELECT_COMMANDS ""
-#define EXT1_EXTRUDER_COOLER_PIN -1
-#define EXT1_EXTRUDER_COOLER_SPEED 255
-#define EXT1_DECOUPLE_TEST_PERIOD 12000
-#define EXT1_JAM_PIN -1
-#define EXT1_JAM_PULLUP 0
 
 #define FEATURE_RETRACTION 1
 #define AUTORETRACT_ENABLED 0
@@ -316,6 +288,10 @@ It also can add a delay to wait for spindle to run on full speed.
 #define DISTORTION_START_DEGRADE 0.5
 #define DISTORTION_END_HEIGHT 1
 #define DISTORTION_EXTRAPOLATE_CORNERS 0
+#define DISTORTION_XMIN 10
+#define DISTORTION_YMIN 10
+#define DISTORTION_XMAX 190
+#define DISTORTION_YMAX 190
 
 // ##########################################################################################
 // ##                           Movement settings                                          ##
@@ -332,7 +308,7 @@ It also can add a delay to wait for spindle to run on full speed.
 #define DELTA_HOME_ON_POWER 0
 
 #define DELTASEGMENTS_PER_PRINTLINE 24
-#define STEPPER_INACTIVE_TIME 60L
+#define STEPPER_INACTIVE_TIME 360L
 #define MAX_INACTIVE_TIME 0L
 #define MAX_FEEDRATE_X 200
 #define MAX_FEEDRATE_Y 200
@@ -392,10 +368,10 @@ It also can add a delay to wait for spindle to run on full speed.
 
 // ################# Misc. settings ##################
 
-#define BAUDRATE 115200
+#define BAUDRATE 230400
 #define ENABLE_POWER_ON_STARTUP 1
 #define POWER_INVERTING 0
-#define KILL_METHOD 0
+#define KILL_METHOD 1
 #define ACK_WITH_LINENUMBER 1
 #define WAITING_IDENTIFIER "wait"
 #define ECHO_ON_EXECUTE 1
@@ -422,7 +398,7 @@ WARNING: Servos can draw a considerable amount of current. Make sure your system
 #define UI_SERVO_CONTROL 0
 #define FAN_KICKSTART_TIME  200
 
-        #define FEATURE_WATCHDOG 0
+        #define FEATURE_WATCHDOG 1
 
 // #################### Z-Probing #####################
 
@@ -451,6 +427,16 @@ WARNING: Servos can draw a considerable amount of current. Make sure your system
 #define Z_PROBE_Y2 20
 #define Z_PROBE_X3 100
 #define Z_PROBE_Y3 160
+#define BED_LEVELING_METHOD 0
+#define BED_CORRECTION_METHOD 0
+#define BED_LEVELING_GRID_SIZE 5
+#define BED_LEVELING_REPETITIONS 5
+#define BED_MOTOR_1_X 0
+#define BED_MOTOR_1_Y 0
+#define BED_MOTOR_2_X 200
+#define BED_MOTOR_2_Y 0
+#define BED_MOTOR_3_X 100
+#define BED_MOTOR_3_Y 200
 #define BENDING_CORRECTION_A 0
 #define BENDING_CORRECTION_B 0
 #define BENDING_CORRECTION_C 0
@@ -472,6 +458,7 @@ WARNING: Servos can draw a considerable amount of current. Make sure your system
 #define FEATURE_MEMORY_POSITION 1
 #define FEATURE_CHECKSUM_FORCED 0
 #define FEATURE_FAN_CONTROL 1
+#define FEATURE_FAN2_CONTROL 0
 #define FEATURE_CONTROLLER 0
 #define LANGUAGE_EN_ACTIVE 1
 #define LANGUAGE_DE_ACTIVE 1
@@ -483,6 +470,7 @@ WARNING: Servos can draw a considerable amount of current. Make sure your system
 #define LANGUAGE_FR_ACTIVE 1
 #define LANGUAGE_CZ_ACTIVE 1
 #define LANGUAGE_PL_ACTIVE 1
+#define LANGUAGE_TR_ACTIVE 1
 #define UI_PRINTER_NAME "RepRap"
 #define UI_PRINTER_COMPANY "Home made"
 #define UI_PAGES_DURATION 4000
@@ -532,9 +520,9 @@ Values must be in range 1..255
 
 ========== Start configuration string ==========
 {
-    "editMode": 2,
+    "editMode": 1,
     "processor": 1,
-    "baudrate": 115200,
+    "baudrate": 230400,
     "bluetoothSerial": -1,
     "bluetoothBaudrate": 115200,
     "xStepsPerMM": 80,
@@ -592,51 +580,6 @@ Values must be in range 1..255
             "decoupleTestPeriod": 12,
             "jamPin": -1,
             "jamPullup": "0"
-        },
-        {
-            "id": 1,
-            "heatManager": 3,
-            "pidDriveMin": 40,
-            "pidDriveMax": 230,
-            "pidMax": 255,
-            "sensorType": 1,
-            "sensorPin": "TEMP_2_PIN",
-            "heaterPin": "HEATER_2_PIN",
-            "maxFeedrate": 50,
-            "startFeedrate": 20,
-            "invert": "0",
-            "invertEnable": "0",
-            "acceleration": 5000,
-            "watchPeriod": 1,
-            "pidP": 7,
-            "pidI": 2,
-            "pidD": 40,
-            "advanceK": 0,
-            "advanceL": 0,
-            "waitRetractTemp": 150,
-            "waitRetractUnits": 0,
-            "waitRetract": 0,
-            "stepsPerMM": 370,
-            "coolerPin": -1,
-            "coolerSpeed": 255,
-            "selectCommands": "",
-            "deselectCommands": "",
-            "xOffset": 0,
-            "yOffset": 0,
-            "zOffset": 0,
-            "xOffsetSteps": 0,
-            "yOffsetSteps": 0,
-            "zOffsetSteps": 0,
-            "stepper": {
-                "name": "Extruder 1",
-                "step": "ORIG_E1_STEP_PIN",
-                "dir": "ORIG_E1_DIR_PIN",
-                "enable": "ORIG_E1_ENABLE_PIN"
-            },
-            "advanceBacklashSteps": 0,
-            "decoupleTestPeriod": 12,
-            "jamPin": -1,
-            "jamPullup": "0"
         }
     ],
     "uiLanguage": 0,
@@ -648,7 +591,7 @@ Values must be in range 1..255
     "yMaxEndstop": 0,
     "zMaxEndstop": 0,
     "motherboard": 403,
-    "driveSystem": 1,
+    "driveSystem": 0,
     "xMaxSpeed": 200,
     "xHomingSpeed": 40,
     "xTravelAcceleration": 1000,
@@ -683,7 +626,7 @@ Values must be in range 1..255
     "backlashX": 0,
     "backlashY": 0,
     "backlashZ": 0,
-    "stepperInactiveTime": 60,
+    "stepperInactiveTime": 360,
     "maxInactiveTime": 0,
     "xMinPos": 0,
     "yMinPos": 0,
@@ -735,7 +678,7 @@ Values must be in range 1..255
     "echoOnExecute": "1",
     "sendWaits": "1",
     "ackWithLineNumber": "1",
-    "killMethod": 0,
+    "killMethod": 1,
     "useAdvance": "0",
     "useQuadraticAdvance": "0",
     "powerInverting": 0,
@@ -773,7 +716,7 @@ Values must be in range 1..255
     "servo1Pin": -1,
     "servo2Pin": -1,
     "servo3Pin": -1,
-    "featureWatchdog": "0",
+    "featureWatchdog": "1",
     "hasHeatedBed": "0",
     "enableZProbing": "0",
     "extrudeMaxLength": 160,
@@ -873,6 +816,15 @@ Values must be in range 1..255
     "sdExtendedDir": "1",
     "featureFanControl": "1",
     "fanPin": "ORIG_FAN_PIN",
+    "featureFan2Control": "0",
+    "fan2Pin": "ORIG_FAN2_PIN",
+    "fanThermoPin": -1,
+    "fanThermoMinPWM": 128,
+    "fanThermoMaxPWM": 255,
+    "fanThermoMinTemp": 45,
+    "fanThermoMaxTemp": 60,
+    "fanThermoThermistorPin": -1,
+    "fanThermoThermistorType": 1,
     "scalePidToMax": 0,
     "zProbePin": -1,
     "zProbeBedDistance": 10,
@@ -937,6 +889,10 @@ Values must be in range 1..255
     "distortionStartDegrade": 0.5,
     "distortionEndDegrade": 1,
     "distortionExtrapolateCorners": "0",
+    "distortionXMin": 10,
+    "distortionXMax": 190,
+    "distortionYMin": 10,
+    "distortionYMax": 190,
     "sdRunOnStop": "",
     "sdStopHeaterMotorsOnStop": "1",
     "featureRetraction": "1",
@@ -968,7 +924,7 @@ Values must be in range 1..255
     "jamErrorSteps": 500,
     "jamMinSteps": 10,
     "jamAction": 1,
-    "primaryPort": 1,
+    "primaryPort": 2,
     "numMotorDrivers": 0,
     "motorDrivers": [
         {
@@ -1057,6 +1013,7 @@ Values must be in range 1..255
     "langFR": "1",
     "langCZ": "1",
     "langPL": "1",
+    "langTR": "1",
     "interpolateAccelerationWithZ": 0,
     "accelerationFactorTop": 100,
     "bendingCorrectionA": 0,
@@ -1076,6 +1033,16 @@ Values must be in range 1..255
     "cncDirectionCW": "1",
     "startupGCode": "",
     "jsonOutput": "0",
+    "bedLevelingMethod": 0,
+    "bedCorrectionMethod": 0,
+    "bedLevelingGridSize": 5,
+    "bedLevelingRepetitions": 5,
+    "bedMotor1X": 0,
+    "bedMotor1Y": 0,
+    "bedMotor2X": 200,
+    "bedMotor2Y": 0,
+    "bedMotor3X": 100,
+    "bedMotor3Y": 200,
     "hasMAX6675": false,
     "hasMAX31855": false,
     "hasGeneric1": false,
@@ -1084,9 +1051,9 @@ Values must be in range 1..255
     "hasUser0": false,
     "hasUser1": false,
     "hasUser2": false,
-    "numExtruder": 2,
-    "version": 92.6,
-    "primaryPortName": "Serial"
+    "numExtruder": 1,
+    "version": 92.8,
+    "primaryPortName": "SerialUSB"
 }
 ========== End configuration string ==========
 
